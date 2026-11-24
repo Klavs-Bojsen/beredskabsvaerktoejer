@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="da">
-<head> HTML
+
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>Beredskabsværktøjer</title>
 
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e53935">
+
 <style>
+
 body{
-    font-family:Arial,sans-serif;
+    font-family: Arial, sans-serif;
     background:#1a1a1a;
     color:white;
     margin:0;
@@ -22,39 +28,75 @@ body{
 .card{
     background:#2b2b2b;
     padding:20px;
-    border-radius:12px;
+    border-radius:16px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);
 }
 
 h1{
     color:#e53935;
+    margin-top:0;
+}
+
+h2{
+    margin-top:5px;
+    color:#f0f0f0;
+}
+
+label{
+    display:block;
+    margin-top:12px;
+    font-weight:bold;
 }
 
 input{
     width:100%;
+    box-sizing:border-box;
     padding:12px;
-    margin:4px 0 12px 0;
-    border-radius:8px;
+    margin-top:6px;
     border:none;
+    border-radius:8px;
+    font-size:16px;
 }
 
 button{
     width:100%;
-    padding:15px;
-    background:#e53935;
-    color:white;
+    margin-top:20px;
+    padding:16px;
     border:none;
-    border-radius:8px;
+    border-radius:10px;
     font-size:18px;
     font-weight:bold;
+    background:#e53935;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#c62828;
 }
 
 .result{
     margin-top:20px;
-    background:#111;
     padding:15px;
-    border-radius:8px;
+    border-radius:10px;
+    background:#111;
+    line-height:1.8;
 }
+
+.highlight{
+    color:#00e676;
+    font-weight:bold;
+}
+
+.footer{
+    margin-top:20px;
+    text-align:center;
+    font-size:12px;
+    color:#999;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -78,47 +120,76 @@ button{
 <label>Autosprøjte ydelse (L/min)</label>
 <input type="number" id="auto" value="1200">
 
-<label>Tankvogn cyklustid (min)</label>
+<label>Tankvogn cyklustid (Minutter)</label>
 <input type="number" id="cyklus" value="15">
 
 <button onclick="beregn()">BEREGN</button>
 
 <div class="result" id="resultat"></div>
 
+<div class="footer">
+Version 1.0
 </div>
+
+</div>
+
 </div>
 
 <script>
 
 function beregn(){
 
-let vand = Number(document.getElementById("forbrug").value);
-let brandhane = Number(document.getElementById("brandhane").value);
-let tank = Number(document.getElementById("tank").value);
-let auto = Number(document.getElementById("auto").value);
-let cyklus = Number(document.getElementById("cyklus").value);
+let vand = parseFloat(document.getElementById("forbrug").value) || 0;
+let brandhane = parseFloat(document.getElementById("brandhane").value) || 0;
+let tank = parseFloat(document.getElementById("tank").value) || 1;
+let auto = parseFloat(document.getElementById("auto").value) || 1;
+let cyklus = parseFloat(document.getElementById("cyklus").value) || 1;
 
-let rest = Math.max(vand-brandhane,0);
+let rest = Math.max(vand - brandhane, 0);
 
-let autosproejter = Math.ceil(vand/auto);
+let autosproejter = Math.ceil(vand / auto);
 
-let behovTime = rest*60;
+let behovTime = rest * 60;
 
-let leveringTime = (tank/cyklus)*60;
+let leveringTime = (tank / cyklus) * 60;
 
-let tankvogne = Math.ceil(behovTime/leveringTime);
+let tankvogne = Math.ceil(behovTime / leveringTime);
 
-document.getElementById("resultat").innerHTML=
-`
-<b>Rest vandbehov:</b> ${rest} L/min<br><br>
-<b>Autosprøjter nødvendige:</b> ${autosproejter}<br><br>
-<b>Vandbehov pr. time:</b> ${behovTime.toLocaleString()} L/time<br><br>
-<b>Tankvognsleverance pr. time:</b> ${Math.round(leveringTime).toLocaleString()} L/time<br><br>
-<b>Tankvogne nødvendige:</b> ${tankvogne}
+document.getElementById("resultat").innerHTML = `
+<div>
+Rest vandbehov:
+<span class="highlight">${rest.toLocaleString('da-DK')} L/min</span>
+</div>
+
+<div>
+Autosprøjter nødvendige:
+<span class="highlight">${autosproejter}</span>
+</div>
+
+<div>
+Vandbehov pr. time:
+<span class="highlight">${behovTime.toLocaleString('da-DK')} L/time</span>
+</div>
+
+<div>
+Tankvognsleverance pr. time:
+<span class="highlight">${Math.round(leveringTime).toLocaleString('da-DK')} L/time</span>
+</div>
+
+<div>
+Tankvogne nødvendige:
+<span class="highlight">${tankvogne}</span>
+</div>
 `;
 }
 
 beregn();
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js');
+    });
+}
 
 </script>
 
