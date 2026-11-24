@@ -1,19 +1,20 @@
 {
   "name": "Beredskabsværktøjer",
   "short_name": "Beredskab",
-  "start_url": "./",
+  "start_url": "/beredskabsvaerktoejer/",
+  "scope": "/beredskabsvaerktoejer/",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#e53935",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/beredskabsvaerktoejer/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "/beredskabsvaerktoejer/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
