@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beredskabsværktøjer</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#1a1a1a;
+    color:white;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+}
+
+.card{
+    background:#2b2b2b;
+    padding:20px;
+    border-radius:12px;
+}
+
+h1{
+    color:#e53935;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:4px 0 12px 0;
+    border-radius:8px;
+    border:none;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    background:#e53935;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.result{
+    margin-top:20px;
+    background:#111;
+    padding:15px;
+    border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🚒 Beredskabsværktøjer</h1>
+<h2>Vandforsyningsberegner</h2>
+
+<label>Samlet vandforbrug (L/min)</label>
+<input type="number" id="forbrug" value="1200">
+
+<label>Brandhaneydelse (L/min)</label>
+<input type="number" id="brandhane" value="0">
+
+<label>Tankvogn kapacitet (Liter)</label>
+<input type="number" id="tank" value="8000">
+
+<label>Autosprøjte ydelse (L/min)</label>
+<input type="number" id="auto" value="1200">
+
+<label>Tankvogn cyklustid (min)</label>
+<input type="number" id="cyklus" value="15">
+
+<button onclick="beregn()">BEREGN</button>
+
+<div class="result" id="resultat"></div>
+
+</div>
+</div>
+
+<script>
+
+function beregn(){
+
+let vand = Number(document.getElementById("forbrug").value);
+let brandhane = Number(document.getElementById("brandhane").value);
+let tank = Number(document.getElementById("tank").value);
+let auto = Number(document.getElementById("auto").value);
+let cyklus = Number(document.getElementById("cyklus").value);
+
+let rest = Math.max(vand-brandhane,0);
+
+let autosproejter = Math.ceil(vand/auto);
+
+let behovTime = rest*60;
+
+let leveringTime = (tank/cyklus)*60;
+
+let tankvogne = Math.ceil(behovTime/leveringTime);
+
+document.getElementById("resultat").innerHTML=
+`
+<b>Rest vandbehov:</b> ${rest} L/min<br><br>
+<b>Autosprøjter nødvendige:</b> ${autosproejter}<br><br>
+<b>Vandbehov pr. time:</b> ${behovTime.toLocaleString()} L/time<br><br>
+<b>Tankvognsleverance pr. time:</b> ${Math.round(leveringTime).toLocaleString()} L/time<br><br>
+<b>Tankvogne nødvendige:</b> ${tankvogne}
+`;
+}
+
+beregn();
+
+</script>
+
+</body>
+</html>
